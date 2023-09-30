@@ -84,7 +84,17 @@ VOID lzw::decoder::Decompress( VOID )
 
   while ((Next = ReadAsBits(CurBit)) != EOF)
   {
+    if (DictSize >= pow(2, CurBit) - 1)
+    {
+      CurBit++;
+      Next <<= 1;
+      Next |= In.ReadBit();
+    }
+
     if (Next == CODE_TERM)
+      break;
+    
+    if (CurBit >= MAX_BITS)
       break;
 
     if (Next <= 255)
@@ -92,7 +102,6 @@ VOID lzw::decoder::Decompress( VOID )
       Dict[DictSize++] = {Cur, Next};
       Out.put(Next);
     }
-
     else if (Next < DictSize)
     {
       i = 0;
@@ -128,12 +137,6 @@ VOID lzw::decoder::Decompress( VOID )
         Out.put(Stack[i]);
     }
 
-    if (DictSize >= pow(2, CurBit) - 1)
-    {
-      CurBit++;
-      Next <<= 1;
-      Next |= In.ReadBit();
-    }
     Cur = Next;
   }
 } /* End of 'Decompress' function */

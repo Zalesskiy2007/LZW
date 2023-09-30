@@ -70,24 +70,16 @@ namespace lzw
       while (Next != EOF)
       {
         if (DictMap.find({Cur, Next}) == DictMap.end())
-        {
+        {          
           // Not found - add new
           DictMap[{Cur, Next}] = DictSize;
           DictSize++;
 
-          if (DictSize >= pow(2, CurBit))
-            if (CurBit < MAX_BITS)
-              CurBit++;
-
-          /*if (CurBit >= MAX_BITS)
-          {
-            WriteAsBits(CODE_CLEAR, CurBit);
-            CurBit = 9;
-            DictSize = 258;
-            DictMap.clear();
-          }*/
-
           WriteAsBits(Cur, CurBit);
+
+          if (DictSize >= pow(2, CurBit))
+            CurBit++;
+
           Cur = Next;
         }
         else

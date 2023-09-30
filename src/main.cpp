@@ -1,21 +1,33 @@
 #include "lzw.h"
 
-INT main( VOID )
+INT main( INT ArgC, CHAR **ArgV )
 {
-  lzw::decoder e;
-  lzw::encoder c;
+    CHAR m;
+    std::string from, to;
 
-  std::string from;
-  
-  std::cout << "FROM: ";
-  std::cin >> from;
+    lzw::decoder e;
+    lzw::encoder c;
+    
+    std::cout << "Inpute mode: ";
+    std::cin >> m;
+    std::cout << "Inpute from: ";
+    std::cin >> from;
+    std::cout << "Inpute to: ";
+    std::cin >> to;
 
-  c.Open("from/" + from + ".txt", "result/encode.lzw");
-  c.Compress();
-  c.Close();
-
-  e.Open("result/encode.lzw", "result/decode.txt");
-  e.Decompress();
-  e.Close();
+    if (m == 'c')
+    {
+      if (!c.Open(from, to))
+        return 0;
+      c.Compress();
+      c.Close();    
+    }
+    else if (m == 'd')
+    {
+      if (!e.Open(from, to))
+        return 0;
+      e.Decompress();
+      e.Close();
+    }
   return 0;
 }
